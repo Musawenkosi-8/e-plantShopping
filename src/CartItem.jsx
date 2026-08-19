@@ -7,82 +7,140 @@ const CartItem = ({ onContinueShopping }) => {
   const cart = useSelector(state => state.cart.items);
   const dispatch = useDispatch();
 
-  // Helper function to extract numerical value from cost string (e.g., "$15" -> 15)
-  const parseCost = (costString) => {
-    return parseFloat(costString.replace(/[^0-9.-]+/g, '')) || 0;
-  };
-
   // Calculate total amount for all products in the cart
   const calculateTotalAmount = () => {
-    return cart.reduce((total, item) => {
-      return total + parseCost(item.cost) * item.quantity;
-    }, 0).toFixed(2);
+    let total = 0;
+    cart.forEach(item => {
+      const costNumber = parseFloat(item.cost.substring(1));
+      total += costNumber * item.quantity;
+    });
+    return total;
   };
 
+  // Continue shopping handler
   const handleContinueShopping = (e) => {
-    if (e) e.preventDefault();
     if (onContinueShopping) {
       onContinueShopping(e);
     }
   };
 
+  // Checkout alert handler
   const handleCheckoutShopping = (e) => {
     alert('Functionality to be added for future reference');
   };
 
+  // Increment item quantity
   const handleIncrement = (item) => {
-    dispatch(updateQuantity({
-      name: item.name,
-      quantity: item.quantity + 1
-    }));
+    dispatch(updateQuantity({ name: item.name, quantity: item.quantity + 1 }));
   };
 
+  // Decrement item quantity or remove if quantity reaches 0
   const handleDecrement = (item) => {
     if (item.quantity > 1) {
-      dispatch(updateQuantity({
-        name: item.name,
-        quantity: item.quantity - 1
-      }));
+      dispatch(updateQuantity({ name: item.name, quantity: item.quantity - Assuming standard Redux state structure where items are stored in `state.cart.items`, here is the complete implementation for **`CartItem.jsx`** containing all requested calculation functions and Redux dispatch handlers.
+
+```jsx
+import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { removeItem, updateQuantity } from './CartSlice';
+import './CartItem.css';
+
+const CartItem = ({ onContinueShopping }) => {
+  const cart = useSelector((state) => state.cart.items);
+  const dispatch = useDispatch();
+
+  // Calculate total cost for all items in the cart
+  const calculateTotalAmount = () => {
+    let total = 0;
+    cart.forEach((item) => {
+      const unitCost = parseFloat(item.cost.substring(1));
+      total += unitCost * item.quantity;
+    });
+    return total;
+  };
+
+  // Continue shopping button click handler
+  const handleContinueShopping = (e) => {
+    if (onContinueShopping) {
+      onContinueShopping(e);
+    }
+  };
+
+  // Checkout button click placeholder
+  const handleCheckoutShopping = (e) => {
+    alert('Functionality to be added for future reference');
+  };
+
+  // Increment quantity of an item
+  const handleIncrement = (item) => {
+    dispatch(updateQuantity({ name: item.name, quantity: item.quantity + 1 }));
+  };
+
+  // Decrement quantity or remove item if quantity drops to 0
+  const handleDecrement = (item) => {
+    if (item.quantity > 1) {
+      dispatch(updateQuantity({ name: item.name, quantity: item.quantity - 1 }));
     } else {
       dispatch(removeItem(item.name));
     }
   };
 
+  // Delete item from cart completely
   const handleRemove = (item) => {
     dispatch(removeItem(item.name));
   };
 
-  // Calculate total cost based on quantity for an item
+  // Calculate subtotal for a specific item type
   const calculateTotalCost = (item) => {
-    return (parseCost(item.cost) * item.quantity).toFixed(2);
+    const unitCost = parseFloat(item.cost.substring(1));
+    return unitCost * item.quantity;
   };
 
   return (
     <div className="cart-container">
       <h2 style={{ color: 'black' }}>Total Cart Amount: ${calculateTotalAmount()}</h2>
       <div>
-        {cart.map(item => (
+        {cart.map((item) => (
           <div className="cart-item" key={item.name}>
             <img className="cart-item-image" src={item.image} alt={item.name} />
             <div className="cart-item-details">
               <div className="cart-item-name">{item.name}</div>
               <div className="cart-item-cost">{item.cost}</div>
               <div className="cart-item-quantity">
-                <button className="cart-item-button cart-item-button-dec" onClick={() => handleDecrement(item)}>-</button>
+                <button
+                  className="cart-item-button cart-item-button-dec"
+                  onClick={() => handleDecrement(item)}
+                >
+                  -
+                </button>
                 <span className="cart-item-quantity-value">{item.quantity}</span>
-                <button className="cart-item-button cart-item-button-inc" onClick={() => handleIncrement(item)}>+</button>
+                <button
+                  className="cart-item-button cart-item-button-inc"
+                  onClick={() => handleIncrement(item)}
+                >
+                  +
+                </button>
               </div>
-              <div className="cart-item-total">Total: ${calculateTotalCost(item)}</div>
-              <button className="cart-item-delete" onClick={() => handleRemove(item)}>Delete</button>
+              <div className="cart-item-total">
+                Subtotal: ${calculateTotalCost(item)}
+              </div>
+              <button
+                className="cart-item-delete"
+                onClick={() => handleRemove(item)}
+              >
+                Delete
+              </button>
             </div>
           </div>
         ))}
       </div>
-      <div style={{ marginTop: '20px', color: 'black' }} className='total_cart_amount'></div>
-      <div className="continue_shopping_btn">
-        <button className="get-started-button" onClick={(e) => handleContinueShopping(e)}>Continue Shopping</button>
-        <br />
-        <button className="get-started-button1" onClick={(e) => handleCheckoutShopping(e)}>Checkout</button>
+      <div style={{ marginTop: '20px', display: 'flex', gap: '10px' }} className="continue_shopping_btn">
+        <button className="get-started-button" onClick={(e) => handleContinueShopping(e)}>
+          Continue Shopping
+        </button>
+        <button className="get-started-button1" onClick={(e) => handleCheckoutShopping(e)}>
+          Checkout
+        </button>
       </div>
     </div>
   );
