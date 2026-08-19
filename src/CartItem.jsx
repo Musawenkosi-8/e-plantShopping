@@ -4,48 +4,6 @@ import { removeItem, updateQuantity } from './CartSlice';
 import './CartItem.css';
 
 const CartItem = ({ onContinueShopping }) => {
-  const cart = useSelector(state => state.cart.items);
-  const dispatch = useDispatch();
-
-  // Calculate total amount for all products in the cart
-  const calculateTotalAmount = () => {
-    let total = 0;
-    cart.forEach(item => {
-      const costNumber = parseFloat(item.cost.substring(1));
-      total += costNumber * item.quantity;
-    });
-    return total;
-  };
-
-  // Continue shopping handler
-  const handleContinueShopping = (e) => {
-    if (onContinueShopping) {
-      onContinueShopping(e);
-    }
-  };
-
-  // Checkout alert handler
-  const handleCheckoutShopping = (e) => {
-    alert('Functionality to be added for future reference');
-  };
-
-  // Increment item quantity
-  const handleIncrement = (item) => {
-    dispatch(updateQuantity({ name: item.name, quantity: item.quantity + 1 }));
-  };
-
-  // Decrement item quantity or remove if quantity reaches 0
-  const handleDecrement = (item) => {
-    if (item.quantity > 1) {
-      dispatch(updateQuantity({ name: item.name, quantity: item.quantity - Assuming standard Redux state structure where items are stored in `state.cart.items`, here is the complete implementation for **`CartItem.jsx`** containing all requested calculation functions and Redux dispatch handlers.
-
-```jsx
-import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { removeItem, updateQuantity } from './CartSlice';
-import './CartItem.css';
-
-const CartItem = ({ onContinueShopping }) => {
   const cart = useSelector((state) => state.cart.items);
   const dispatch = useDispatch();
 
