@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { removeItem, updateQuantity } from './CartSlice';
+import { addItem, removeItem, updateQuantity } from './CartSlice';
 import './CartItem.css';
 
 const CartItem = ({ onContinueShopping }) => {
@@ -17,24 +17,24 @@ const CartItem = ({ onContinueShopping }) => {
     return total;
   };
 
-  // Continue shopping button click handler
+  // Continue shopping handler
   const handleContinueShopping = (e) => {
     if (onContinueShopping) {
       onContinueShopping(e);
     }
   };
 
-  // Checkout button click placeholder
+  // Checkout button click handler
   const handleCheckoutShopping = (e) => {
     alert('Functionality to be added for future reference');
   };
 
-  // Increment quantity of an item
+  // Increment item quantity
   const handleIncrement = (item) => {
     dispatch(updateQuantity({ name: item.name, quantity: item.quantity + 1 }));
   };
 
-  // Decrement quantity or remove item if quantity drops to 0
+  // Decrement item quantity or remove item if quantity drops to 0
   const handleDecrement = (item) => {
     if (item.quantity > 1) {
       dispatch(updateQuantity({ name: item.name, quantity: item.quantity - 1 }));

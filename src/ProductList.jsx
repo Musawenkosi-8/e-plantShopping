@@ -11,8 +11,10 @@ function ProductList({ onHomeClick }) {
     const dispatch = useDispatch();
     const cartItems = useSelector(state => state.cart.items);
 
-    // Dynamic cart item count for navbar badge
-    const totalCartCount = cartItems.reduce((total, item) => total + item.quantity, 0);
+    // Calculate total quantity of all items in the cart
+    const calculateTotalQuantity = () => {
+        return cartItems ? cartItems.reduce((total, item) => total + item.quantity, 0) : 0;
+    };
 
     const plantsArray = [
         {
@@ -245,7 +247,7 @@ function ProductList({ onHomeClick }) {
                                     padding: '2px 8px',
                                     fontSize: '14px',
                                     fontWeight: 'bold'
-                                }}>{totalCartCount}</span>
+                                }}>{calculateTotalQuantity()}</span>
                             </div>
                         </a>
                     </div>
