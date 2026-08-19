@@ -6,7 +6,7 @@ import CartItem from './CartItem';
 
 function ProductList({ onHomeClick }) {
     const [showCart, setShowCart] = useState(false);
-    const [addedNodes, setAddedNodes] = useState({});
+    const [addedToCart, setAddedToCart] = useState({});
 
     const dispatch = useDispatch();
     const cartItems = useSelector(state => state.cart.items);
@@ -168,7 +168,7 @@ function ProductList({ onHomeClick }) {
         color: '#fff',
         padding: '15px',
         display: 'flex',
-        justify: 'space-between',
+        justifyContent: 'space-between',
         alignItems: 'center',
         fontSize: '20px',
     };
@@ -202,11 +202,11 @@ function ProductList({ onHomeClick }) {
         setShowCart(false);
     };
 
-    const handleAddToCart = (plant) => {
-        dispatch(addItem(plant));
-        setAddedNodes((prevState) => ({
+    const handleAddToCart = (product) => {
+        dispatch(addItem(product));
+        setAddedToCart((prevState) => ({
             ...prevState,
-            [plant.name]: true,
+            [product.name]: true,
         }));
     };
 
@@ -256,28 +256,30 @@ function ProductList({ onHomeClick }) {
                 <div className="product-grid">
                     {plantsArray.map((categoryObj, index) => (
                         <div key={index} className="category-section">
-                            <h1 className="category-title" style={{ textAlign: 'center', margin: '20px 0' }}>{categoryObj.category}</h1>
-                            <div className="plant-list" style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '20px' }}>
+                            <h1>
+                                <div className="category-title" style={{ textAlign: 'center', margin: '20px 0' }}>{categoryObj.category}</div>
+                            </h1>
+                            <div className="product-list" style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '20px' }}>
                                 {categoryObj.plants.map((plant, pIndex) => (
                                     <div key={pIndex} className="product-card" style={{ border: '1px solid #ccc', borderRadius: '8px', padding: '15px', width: '280px', textAlign: 'center' }}>
-                                        <img src={plant.image} alt={plant.name} style={{ width: '100%', height: '200px', objectFit: 'cover', borderRadius: '4px' }} />
-                                        <h2>{plant.name}</h2>
-                                        <p>{plant.description}</p>
-                                        <p style={{ fontWeight: 'bold', fontSize: '18px' }}>{plant.cost}</p>
+                                        <img className="product-image" src={plant.image} alt={plant.name} style={{ width: '100%', height: '200px', objectFit: 'cover', borderRadius: '4px' }} />
+                                        <div className="product-title">{plant.name}</div>
+                                        <div className="product-description">{plant.description}</div>
+                                        <div className="product-cost">{plant.cost}</div>
                                         <button
                                             className="product-button"
-                                            disabled={addedNodes[plant.name] || cartItems.some(item => item.name === plant.name)}
+                                            disabled={addedToCart[plant.name] || cartItems.some(item => item.name === plant.name)}
                                             onClick={() => handleAddToCart(plant)}
                                             style={{
-                                                backgroundColor: (addedNodes[plant.name] || cartItems.some(item => item.name === plant.name)) ? '#ccc' : '#4CAF50',
+                                                backgroundColor: (addedToCart[plant.name] || cartItems.some(item => item.name === plant.name)) ? '#ccc' : '#4CAF50',
                                                 color: 'white',
                                                 border: 'none',
                                                 padding: '10px 15px',
                                                 borderRadius: '4px',
-                                                cursor: (addedNodes[plant.name] || cartItems.some(item => item.name === plant.name)) ? 'not-allowed' : 'pointer'
+                                                cursor: (addedToCart[plant.name] || cartItems.some(item => item.name === plant.name)) ? 'not-allowed' : 'pointer'
                                             }}
                                         >
-                                            {(addedNodes[plant.name] || cartItems.some(item => item.name === plant.name)) ? "Added to Cart" : "Add to Cart"}
+                                            {(addedToCart[plant.name] || cartItems.some(item => item.name === plant.name)) ? "Added to Cart" : "Add to Cart"}
                                         </button>
                                     </div>
                                 ))}
